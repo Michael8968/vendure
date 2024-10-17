@@ -73,6 +73,7 @@ import { ProductVariantsTableComponent } from './components/product-variants-tab
 import { UpdateProductOptionDialogComponent } from './components/update-product-option-dialog/update-product-option-dialog.component';
 import { VariantPriceDetailComponent } from './components/variant-price-detail/variant-price-detail.component';
 import { VariantPriceStrategyDetailComponent } from './components/variant-price-strategy-detail/variant-price-strategy-detail.component';
+import { CreateVimeoVideoDialogComponent } from './components/create-vimeo-video-dialog/create-vimeo-video-dialog.component';
 
 const CATALOG_COMPONENTS = [
     ProductListComponent,
@@ -108,6 +109,7 @@ const CATALOG_COMPONENTS = [
     CreateProductOptionGroupDialogComponent,
     ProductVariantQuickJumpComponent,
     CreateFacetValueDialogComponent,
+    CreateVimeoVideoDialogComponent,
 ];
 
 @NgModule({

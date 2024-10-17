@@ -5,6 +5,9 @@
             (searchTermChange)="searchTerm$.next($event)"
             (tagsChange)="filterByTags$.next($event)"
         >
+            <button class="button primary" (click)="openVimeoVideoDialog()">
+                <clr-icon shape="video-gallery"></clr-icon>Vimeo Video
+            </button>
             <vdr-asset-file-input
                 (selectFiles)="filesSelected($event)"
                 [uploading]="uploading"
@@ -13,7 +16,7 @@
         </vdr-asset-search-input>
     </div>
     <vdr-asset-gallery
-        [assets]="(items$ | async)! | paginate : (paginationConfig$ | async) || {}"
+        [assets]="(items$ | async)! | paginate: (paginationConfig$ | async) || {}"
         [multiSelect]="true"
         [canDelete]="['DeleteCatalog', 'DeleteAsset'] | hasPermission"
         (deleteAssets)="deleteAssets($event)"

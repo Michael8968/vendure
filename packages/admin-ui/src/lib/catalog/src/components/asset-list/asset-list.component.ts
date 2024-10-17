@@ -18,6 +18,7 @@ import {
 import { PaginationInstance } from 'ngx-pagination';
 import { BehaviorSubject, combineLatest, EMPTY, Observable } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { CreateVimeoVideoDialogComponent } from '../create-vimeo-video-dialog/create-vimeo-video-dialog.component';
 
 @Component({
     selector: 'vdr-asset-list',
@@ -42,6 +43,7 @@ export class AssetListComponent
         private notificationService: NotificationService,
         private modalService: ModalService,
         private dataService: DataService,
+        private dialogService: ModalService,
         router: Router,
         route: ActivatedRoute,
     ) {
@@ -160,5 +162,21 @@ export class AssetListComponent
                 switchMap(res => (res ? this.dataService.product.deleteAssets(assetIds, !!message) : EMPTY)),
                 map(res => res.deleteAssets),
             );
+    }
+
+    // Add this new method to handle the Vimeo Video button click
+    openVimeoVideoDialog() {
+        return this.dialogService
+            .fromComponent(CreateVimeoVideoDialogComponent, {
+                size: 'lg',
+            })
+            .subscribe(result => {
+                if (result) {
+                    // Handle the result from the dialog if needed
+                    console.log('Vimeo video dialog result:', result);
+                    // You might want to refresh the asset list or perform other actions
+                    this.refresh();
+                }
+            });
     }
 }

@@ -348,7 +348,9 @@
     "view-next-month": "View next month",
     "view-previous-month": "View previous month",
     "visibility": "Visibility",
-    "with-selected": "With {count} selected..."
+    "with-selected": "With {count} selected...",
+    "add-vimeo-video": "Add Vimeo Video",
+    "link": "Link"
   },
   "customer": {
     "add-customer-to-group": "Add customer to group",

@@ -61,8 +61,7 @@ type InputListItem = {
     ],
 })
 export class DynamicFormInputComponent
-    implements OnInit, OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor
-{
+    implements OnInit, OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor {
     @Input() def: ConfigArgDefinition | CustomFieldConfig;
     @Input() readonly: boolean;
     @Input() control: UntypedFormControl;
@@ -84,9 +83,9 @@ export class DynamicFormInputComponent
         private componentRegistryService: ComponentRegistryService,
         private changeDetectorRef: ChangeDetectorRef,
         private injector: Injector,
-    ) {}
+    ) { }
 
-    ngOnInit() {
+    ngOnInit () {
         const componentId = this.getInputComponentConfig(this.def).component;
         const component = this.componentRegistryService.getInputComponent(componentId);
         if (component) {
@@ -106,7 +105,7 @@ export class DynamicFormInputComponent
         }
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit () {
         if (this.componentType) {
             const injector = Injector.create({
                 providers: this.componentProviders,
@@ -183,7 +182,7 @@ export class DynamicFormInputComponent
         setTimeout(() => this.changeDetectorRef.markForCheck());
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges (changes: SimpleChanges) {
         if (this.listItems) {
             for (const item of this.listItems) {
                 if (item.componentRef) {
@@ -196,12 +195,12 @@ export class DynamicFormInputComponent
         }
     }
 
-    ngOnDestroy() {
+    ngOnDestroy () {
         this.destroy$.next();
         this.destroy$.complete();
     }
 
-    private updateBindings(changes: SimpleChanges, componentRef: ComponentRef<FormInputComponent>) {
+    private updateBindings (changes: SimpleChanges, componentRef: ComponentRef<FormInputComponent>) {
         if ('def' in changes) {
             componentRef.instance.config = simpleDeepClone(this.def);
         }
@@ -211,11 +210,11 @@ export class DynamicFormInputComponent
         componentRef.injector.get(ChangeDetectorRef).markForCheck();
     }
 
-    trackById(index: number, item: { id: number }) {
+    trackById (index: number, item: { id: number }) {
         return item.id;
     }
 
-    addListItem() {
+    addListItem () {
         if (!this.listItems) {
             this.listItems = [];
         }
@@ -226,7 +225,7 @@ export class DynamicFormInputComponent
         this.renderList$.next();
     }
 
-    moveListItem(event: CdkDragDrop<InputListItem>) {
+    moveListItem (event: CdkDragDrop<InputListItem>) {
         if (this.listItems) {
             moveItemInArray(this.listItems, event.previousIndex, event.currentIndex);
             this.listFormArray.removeAt(event.previousIndex);
@@ -235,7 +234,7 @@ export class DynamicFormInputComponent
         }
     }
 
-    removeListItem(item: InputListItem) {
+    removeListItem (item: InputListItem) {
         if (this.listItems) {
             const index = this.listItems.findIndex(i => i === item);
             item.componentRef?.destroy();
@@ -245,29 +244,43 @@ export class DynamicFormInputComponent
         }
     }
 
-    private renderInputComponent(
+    private renderInputComponent (
         injector: Injector,
         viewContainerRef: ViewContainerRef,
         formControl: UntypedFormControl,
     ) {
         const componentRef = viewContainerRef.createComponent(this.componentType, { injector });
         const { instance } = componentRef;
-        instance.config = simpleDeepClone(this.def);
+        if (this.def.name === 'method') {
+            instance.config = {
+                ...simpleDeepClone(this.def),
+                ui: {
+                    ...simpleDeepClone(this.def.ui),
+                    options: [
+                        { value: 'USPS' },
+                        { value: 'UPS' },
+                        { value: 'FedEx' },
+                    ],
+                },
+            };
+        } else {
+            instance.config = simpleDeepClone(this.def);
+        }
         instance.formControl = formControl;
         instance.readonly = this.readonly;
         componentRef.injector.get(ChangeDetectorRef).markForCheck();
         return componentRef;
     }
 
-    registerOnChange(fn: any): void {
+    registerOnChange (fn: any): void {
         this.onChange = fn;
     }
 
-    registerOnTouched(fn: any): void {
+    registerOnTouched (fn: any): void {
         this.onTouch = fn;
     }
 
-    writeValue(obj: any): void {
+    writeValue (obj: any): void {
         if (Array.isArray(obj)) {
             if (obj.length === this.listItems.length) {
                 obj.forEach((value, index) => {
@@ -277,10 +290,10 @@ export class DynamicFormInputComponent
             } else {
                 this.listItems = obj.map(
                     value =>
-                        ({
-                            id: this.listId++,
-                            control: new UntypedFormControl(getConfigArgValue(value)),
-                        } as InputListItem),
+                    ({
+                        id: this.listId++,
+                        control: new UntypedFormControl(getConfigArgValue(value)),
+                    } as InputListItem),
                 );
                 this.renderList$.next();
             }
@@ -291,7 +304,7 @@ export class DynamicFormInputComponent
         this.changeDetectorRef.markForCheck();
     }
 
-    private getInputComponentConfig(argDef: ConfigArgDefinition | CustomFieldConfig): {
+    private getInputComponentConfig (argDef: ConfigArgDefinition | CustomFieldConfig): {
         component: DefaultFormComponentId;
     } {
         if (this.hasUiConfig(argDef) && argDef.ui.component) {
@@ -301,9 +314,13 @@ export class DynamicFormInputComponent
         switch (type) {
             case 'string':
             case 'localeString': {
-                const hasOptions =
+                let hasOptions =
                     !!(this.isConfigArgDef(argDef) && argDef.ui?.options) ||
                     !!(argDef as StringCustomFieldConfig).options;
+                const name = argDef.name;
+                if (name === 'method' && !hasOptions) {
+                    hasOptions = true;
+                }
                 if (hasOptions) {
                     return { component: 'select-form-input' };
                 } else {
@@ -330,11 +347,11 @@ export class DynamicFormInputComponent
         }
     }
 
-    private isConfigArgDef(def: ConfigArgDefinition | CustomFieldConfig): def is ConfigArgDefinition {
+    private isConfigArgDef (def: ConfigArgDefinition | CustomFieldConfig): def is ConfigArgDefinition {
         return (def as ConfigArgDefinition)?.__typename === 'ConfigArgDefinition';
     }
 
-    private hasUiConfig(def: unknown): def is { ui: { component: string } } {
+    private hasUiConfig (def: unknown): def is { ui: { component: string } } {
         return typeof def === 'object' && typeof (def as any)?.ui?.component === 'string';
     }
 }

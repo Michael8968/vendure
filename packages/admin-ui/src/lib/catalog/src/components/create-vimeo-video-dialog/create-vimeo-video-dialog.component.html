@@ -1,0 +1,31 @@
+<ng-template vdrDialogTitle>
+    {{ 'common.add-vimeo-video' | translate }}
+</ng-template>
+<form [formGroup]="videoForm">
+    <!-- <vdr-dialog-title>{{ 'common.add-vimeo-video' | translate }}</vdr-dialog-title> -->
+    <vdr-form-field [label]="'common.name' | translate" for="name">
+        <input id="name" type="text" formControlName="name" required />
+    </vdr-form-field>
+    <vdr-form-field [label]="'common.link' | translate" for="link">
+        <input id="link" type="text" formControlName="link" required />
+    </vdr-form-field>
+    <vdr-form-field [label]="'common.description' | translate" for="description">
+        <textarea id="description" formControlName="description" rows="3"></textarea>
+    </vdr-form-field>
+    <!-- <vdr-form-field [label]="'common.video-id' | translate">
+        <input id="videoId" type="text" [value]="videoId$ | async" readonly />
+    </vdr-form-field>
+    <vdr-form-item>
+        <div class="hint">
+            {{ 'common.vimeo-url-format-hint' | translate }}
+        </div>
+    </vdr-form-item> -->
+    <ng-template vdrDialogButtons>
+        <button type="button" class="btn" (click)="cancel()">
+            {{ 'common.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-primary" (click)="submit()" [disabled]="videoForm.invalid">
+            {{ 'common.create' | translate }}
+        </button>
+    </ng-template>
+</form>
