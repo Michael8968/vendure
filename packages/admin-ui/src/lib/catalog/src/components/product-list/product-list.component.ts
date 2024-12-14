@@ -11,7 +11,6 @@ import {
     ProductListQueryDocument,
     TypedBaseListComponent,
 } from '@vendure/admin-ui/core';
-import { AuthDataService } from 'package/core/data/providers/auth-data.service';
 import { EMPTY, lastValueFrom } from 'rxjs';
 import { delay, switchMap } from 'rxjs/operators';
 
@@ -94,7 +93,6 @@ export class ProductListComponent
         private modalService: ModalService,
         private notificationService: NotificationService,
         private jobQueueService: JobQueueService,
-        private authDataService: AuthDataService,
     ) {
         super();
         this.configure({

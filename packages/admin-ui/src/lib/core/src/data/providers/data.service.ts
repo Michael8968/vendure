@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MutationUpdaterFn, WatchQueryFetchPolicy } from '@apollo/client/core';
+import { WatchQueryFetchPolicy, MutationUpdaterFunction } from '@apollo/client/core';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { DocumentNode } from 'graphql';
 import { Observable } from 'rxjs';
@@ -106,7 +106,7 @@ export class DataService {
     mutate<T, V extends Record<string, any> = Record<string, any>>(
         mutation: DocumentNode | TypedDocumentNode<T, V>,
         variables?: V,
-        update?: MutationUpdaterFn<T>,
+        update?: MutationUpdaterFunction<T, V, any, any>,
     ): Observable<T> {
         return this.baseDataService.mutate(mutation, variables, update);
     }
