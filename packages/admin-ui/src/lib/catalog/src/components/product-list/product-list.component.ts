@@ -13,7 +13,8 @@ import {
 } from '@vendure/admin-ui/core';
 import { EMPTY, lastValueFrom } from 'rxjs';
 import { delay, switchMap } from 'rxjs/operators';
-
+// getAppConfig
+import { getAppConfig } from '@vendure/admin-ui/core';
 @Component({
     selector: 'vdr-products-list',
     templateUrl: './product-list.component.html',
@@ -193,23 +194,37 @@ export class ProductListComponent
         if (event.data.type === 'ready' && event.source && this.designPage) {
             // send vnd__authToken to designPage
             const authToken = localStorage.getItem('vnd__authToken');
+            // vnd__activeChannelToken
+            const activeChannelToken = localStorage.getItem('vnd__activeChannelToken');
+            const appConfig = getAppConfig();
             if (authToken) {
                 const message = {
                     type: 'authToken',
                     token: authToken,
+                    appConfig: appConfig,
+                    activeChannelToken: activeChannelToken,
                 };
                 this.designPage.postMessage(message, '*');
                 console.log('sent authToken to designPage', message);
             }
-            const credentials = this.dataService.auth.getLoginCredentials();
-            if (credentials.username && credentials.password) {
+            // const credentials = this.dataService.auth.getLoginCredentials();
+            // if (credentials.username && credentials.password) {
+            //     const message = {
+            //         type: 'login',
+            //         username: credentials.username,
+            //         password: credentials.password,
+            //     };
+            //     this.designPage.postMessage(message, '*');
+            // }
+        }
+        if (event.data.type === 'getProductList') {
+            this.dataService.product.getProducts({ take: 10 }).single$.subscribe(data => {
                 const message = {
-                    type: 'login',
-                    username: credentials.username,
-                    password: credentials.password,
+                    type: 'productList',
+                    productList: data.products,
                 };
-                this.designPage.postMessage(message, '*');
-            }
+                this.designPage?.postMessage(message, '*');
+            });
         }
     }
 }
