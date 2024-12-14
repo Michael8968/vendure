@@ -22,6 +22,7 @@ export * from './components/confirm-variant-deletion-dialog/confirm-variant-dele
 export * from './components/create-facet-value-dialog/create-facet-value-dialog.component';
 export * from './components/create-product-option-group-dialog/create-product-option-group-dialog.component';
 export * from './components/create-product-variant-dialog/create-product-variant-dialog.component';
+export * from './components/create-vimeo-video-dialog/create-vimeo-video-dialog.component';
 export * from './components/facet-detail/facet-detail.component';
 export * from './components/facet-list/facet-list-bulk-actions';
 export * from './components/facet-list/facet-list.component';

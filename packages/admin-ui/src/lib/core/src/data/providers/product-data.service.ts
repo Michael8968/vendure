@@ -52,9 +52,13 @@ import {
 } from '../definitions/settings-definitions';
 
 import { BaseDataService } from './base-data.service';
+import { AuthDataService } from './auth-data.service';
 
 export class ProductDataService {
-    constructor(private baseDataService: BaseDataService) {}
+    constructor(
+        private baseDataService: BaseDataService,
+        private authDataService: AuthDataService,
+    ) {}
 
     searchProducts(term: string, take = 10, skip = 0) {
         return this.baseDataService.query<Codegen.SearchProductsQuery, Codegen.SearchProductsQueryVariables>(

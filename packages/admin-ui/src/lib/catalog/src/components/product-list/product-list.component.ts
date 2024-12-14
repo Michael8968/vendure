@@ -11,6 +11,7 @@ import {
     ProductListQueryDocument,
     TypedBaseListComponent,
 } from '@vendure/admin-ui/core';
+import { AuthDataService } from 'package/core/data/providers/auth-data.service';
 import { EMPTY, lastValueFrom } from 'rxjs';
 import { delay, switchMap } from 'rxjs/operators';
 
@@ -93,6 +94,7 @@ export class ProductListComponent
         private modalService: ModalService,
         private notificationService: NotificationService,
         private jobQueueService: JobQueueService,
+        private authDataService: AuthDataService,
     ) {
         super();
         this.configure({
@@ -173,5 +175,43 @@ export class ProductListComponent
                     });
                 },
             );
+    }
+    designPage: Window | null = null;
+    openDesignPage() {
+        // open http://localhost:3001/ and send message to it, if opened, use postMessage to send message to it
+        this.designPage = window.open('http://localhost:3001/', 'designTab');
+        if (this.designPage) {
+            // listen to message from designPage
+            window.addEventListener('message', this.onMessageFromDesignPage.bind(this));
+        }
+    }
+
+    onMessageFromDesignPage(event: MessageEvent) {
+        // ignore message from self
+        if (event.source === window) {
+            return;
+        }
+        console.log('message from designPage', event, event.data, event.source, this.designPage);
+        if (event.data.type === 'ready' && event.source && this.designPage) {
+            // send vnd__authToken to designPage
+            const authToken = localStorage.getItem('vnd__authToken');
+            if (authToken) {
+                const message = {
+                    type: 'authToken',
+                    token: authToken,
+                };
+                this.designPage.postMessage(message, '*');
+                console.log('sent authToken to designPage', message);
+            }
+            const credentials = this.dataService.auth.getLoginCredentials();
+            if (credentials.username && credentials.password) {
+                const message = {
+                    type: 'login',
+                    username: credentials.username,
+                    password: credentials.password,
+                };
+                this.designPage.postMessage(message, '*');
+            }
+        }
     }
 }

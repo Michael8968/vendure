@@ -8,6 +8,11 @@
             ></vdr-language-selector>
         </vdr-ab-left>
         <vdr-ab-right>
+            <!-- add button -->
+            <button class="button primary mr-1" (click)="openDesignPage()">
+                <clr-icon shape="plus"></clr-icon>
+                Open Designer
+            </button>
             <vdr-action-bar-items locationId="product-list"></vdr-action-bar-items>
             <a
                 class="button primary mr-1"
@@ -46,27 +51,34 @@
         [searchTermControl]="searchTermControl"
         [searchTermPlaceholder]="'settings.search-by-product-name-or-sku' | translate"
     />
-    <vdr-dt2-column [heading]="'common.id' | translate" id="id" [hiddenByDefault]="true" [sort]="sorts.get('id')">
+    <vdr-dt2-column
+        [heading]="'common.id' | translate"
+        id="id"
+        [hiddenByDefault]="true"
+        [sort]="sorts.get('id')"
+    >
         <ng-template let-product="item">
             {{ product.id }}
         </ng-template>
     </vdr-dt2-column>
     <vdr-dt2-column
-        [heading]="'common.created-at' | translate" id="created-at"
+        [heading]="'common.created-at' | translate"
+        id="created-at"
         [hiddenByDefault]="true"
         [sort]="sorts.get('createdAt')"
     >
         <ng-template let-product="item">
-            {{ product.createdAt | localeDate : 'short' }}
+            {{ product.createdAt | localeDate: 'short' }}
         </ng-template>
     </vdr-dt2-column>
     <vdr-dt2-column
-        [heading]="'common.updated-at' | translate" id="updated-at"
+        [heading]="'common.updated-at' | translate"
+        id="updated-at"
         [hiddenByDefault]="true"
         [sort]="sorts.get('updatedAt')"
     >
         <ng-template let-product="item">
-            {{ product.updatedAt | localeDate : 'short' }}
+            {{ product.updatedAt | localeDate: 'short' }}
         </ng-template>
     </vdr-dt2-column>
     <vdr-dt2-column [heading]="'common.image' | translate" id="image">
@@ -74,7 +86,7 @@
             <div class="image-placeholder">
                 <img
                     *ngIf="product.featuredAsset as asset; else imagePlaceholder"
-                    [src]="asset | assetPreview : 'tiny'"
+                    [src]="asset | assetPreview: 'tiny'"
                 />
                 <ng-template #imagePlaceholder>
                     <div class="placeholder">
@@ -84,7 +96,12 @@
             </div>
         </ng-template>
     </vdr-dt2-column>
-    <vdr-dt2-column [heading]="'catalog.name' | translate" id="name" [optional]="false" [sort]="sorts.get('name')">
+    <vdr-dt2-column
+        [heading]="'catalog.name' | translate"
+        id="name"
+        [optional]="false"
+        [sort]="sorts.get('name')"
+    >
         <ng-template let-product="item">
             <a class="button-ghost" [routerLink]="['./', product.id]"
                 ><span>{{ product.name }}</span
@@ -109,7 +126,7 @@
     </vdr-dt2-column>
     <vdr-dt2-column [heading]="'catalog.number-of-variants' | translate" id="number-of-variants">
         <ng-template let-product="item">
-            {{ 'catalog.variant-count' | translate : { count: product.variantList?.totalItems } }}
+            {{ 'catalog.variant-count' | translate: { count: product.variantList?.totalItems } }}
         </ng-template>
     </vdr-dt2-column>
     <vdr-dt2-custom-field-column
